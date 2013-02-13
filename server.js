@@ -82,7 +82,8 @@ function RenderStrip(){
 
 	Device.transfer(Pixels.buffer, Pixels.readBuffer)
 
-	if(RUNNING)
+	if(RUNNING){
 		Frame++
 		setTimeout(RenderStrip, 1000 / FPS)
+	}
 }
