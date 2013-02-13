@@ -1,0 +1,32 @@
+{
+  "name": "spi",
+  "version": "0.0.1",
+  "description": "JS Interface for the SPI bus",
+  "author": {
+    "name": "Russell Hay",
+    "email": "me@russellhay.com",
+    "url": "http://russellhay.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/RussTheAerialist/node-spi.git"
+  },
+  "main": "./spi",
+  "dependencies": {
+    "bindings": "*"
+  },
+  "engines": {
+    "node": "0.6"
+  },
+  "scripts": {
+    "install": "node-gyp rebuild"
+  },
+  "gypfile": true,
+  "readme": "node-spi\n========\n\nA NodeJS interface to the SPI bus on embedded linux machines.\n\nThere is a native interface and a wrapped JS interface with a slightly\nbetter API.\n\n**THIS CODE IS NOT FINISHED YET, NOTHING IS FUNCTIONING YET!**\n\n*Note: The first version will be blocking.  I know this is antithetics to\nthe nodejs philosophy, but I think it's important, when dealing with blocking\ninterfaces, to get the code working in a blocking manner, and then introduce\nthe async calls using eio.*\n\nBasic Usage\n===========\n\n```javascript\nvar spi = require(\"spi\");\n\nvar MyDevice = new spi.Spi(\"/dev/spidev1.1\", {\n  \"mode\": 0, // Always do mode first if you need something other than Mode 0\n  \"chip_select\": spi.NO_CS\n  \"max_speed\": 1000000, // In Hz\n  \"size\": 8, // How many bits per word\n});\n\nvar out_buffer = new Buffer([ 0x23, 0x48, 0xAF, 0x19, 0x19, 0x19 ]);\n\nMyDevice.transfer(out_buffer, outbuffer.Length(),\n  function(device, recv_buffer) {\n  // Do Something with the data in the recv buffer, if anything exists\n});\n```\n\nHow you should **really** use the library\n=========================================\n\nThe above basic usage example is not how you should use the library, though.\nIdeally, for each SPI device that is being controlled should have it's own\nobject that implements the protocol necessary to talk to your device so that\nthe device protocol is defined in one place.\n\nAn example project is\n[node-adafruit-pixel](https://github.com/RussTheAerialist/node-adafruit-pixel)\nwhich is a node module to control the\n[AdaFruit RGB Pixels](http://www.adafruit.com/products/738).  The interface is\ndefined in terms of color and pixels, and not in messages being sent via the\nSPI bus, but it uses node-spi to do it's work.\n\nNative Api Reference\n====================\n\nThis section documents the native api which is defined in module \\_spi.node.\nThis is the interface that the normal Spi interface uses, but having a good\nunderstanding of this part is important, as some people may want to use the\nnative interface directly.\n\nCreating, Opening, and Closing the device\n-----------------------------------------\n\n**\\_spi.Spi constructor** - The constructor takes a single argument, the path\nto the spi dev file in /dev.  We do not check that the file exists until you\ncall open.\n\n**open()** - This function takes no arguments and will open the device, setting\nall of the options that were previously set.  Once the device is open, we do not\nallow you to change the settings to the device.\n\n**close()** - This function should always be called before ending.  Right now\nthe destructor for the underlying C++ class does not call close(), but that\nmight change in the future.  You should always call close() when you are done\nwith the device.\n\nConfiguring the Device\n----------------------\n\nThe following functions all act as getter/setters.  If you do not pass an\nargument, it will return the value of the setting.  If you pass in a value,\nit will change the value and then return the Spi class to allow function\nchaining.\n\nTo understand these settings read the\n[Linux SPI Summary](http://www.mjmwired.net/kernel/Documentation/spi/spi-summary)\n\n**mode()** - This sets the clock phase and polarity of the clock signal.  This\nshould always be the first thing you call after open() if you plan to call it.\nBy default it is set to SPI_MODE_0.  The spi namespace provides constants for\nthe four SPI_MODE_X values (X being 0-3).\n\n**chipSelect()** - This allows you to specify if the chip select signal should\nbe used, and if it should go high to select the chip or low.  It defaults to\nsignal low.  Pass in SPI_NO_CS to turn off Chip Select, and SPI_CS_HIGH to\nturn on sending high to select.\n\n**bitsPerWord()** - This allows you to specify the bits per word to send.\nThis defaults to 8-bits.  Check your device's datasheet for this value.\n\n**bitOrder()** - This allows you to specify the order of the bits.  We default\nto MSB, but send True as the argument if you want LSB.  This might not be the\nbest API.\n\n**maxSpeed()** - This allows you to set the max transfer speed.  Again, check\nyour device's datasheet.  This is in Hz and defaults to 1Mhz.\n\n**halfDuplex()** - Set this to True if your device does not support full duplex.\nThis isn't fully supported yet, as I need to add a Read/Write function calls that\nis exposed to javascript. *This would be a great workitem for anyone who wants\nto contribute*\n\n**loopback()** - This sets the Loopback bit on the SPI controller.  I don't\nfully understand what this is used for, but give you the ability to toggle it\nif you'd like.\n\nGetting and Sending Data\n------------------------\n\n**transfer()** - This takes two buffers, a write buffer and a read buffer.\nIf you only want to do one way transfer, then pass null to that argument.  For\nexample, writes would look like this:\n\n```javascript\nvar buff = new Buffer([0x12, 0x12, 0x12]);\nspi.transfer(buff, null);\n```\n\nReads would look like this:\n\n```javascript\nvar buff = new Buffer(8);\nspi.transfer(null, buff);\n```\n\nRemember that these native apis are currently blocking.  I will update, once I\nhave the hardware to test this properly, to be async instead of blocking.\n",
+  "readmeFilename": "README.md",
+  "_id": "spi@0.0.1",
+  "dist": {
+    "shasum": "7428d2f07d71c1a3b5bbf9675b10779f87838f02"
+  },
+  "_from": "node-spi-master"
+}

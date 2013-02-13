@@ -1,0 +1,17 @@
+span.spectrum {
+  display: block;
+  width: 150px;
+  height: 15px;
+  margin: 0 0 -3px 7px;
+  background: -webkit-linear-gradient(left, hsl(0,100%,50%),hsl(60,100%, 50%), hsl(120,100%, 50%), hsl(180, 100%, 50%), hsl(240,100%,50%),hsl(300,100%,50%), hsl(360,100%,50%) 100%); 
+}
+input[type=range].hue, input[type=range].lightness{
+	width: 161px;
+}
+input[type=range].hue {
+  margin-top: -15px;
+}
+
+div.well a{
+  color: #fff;
+}

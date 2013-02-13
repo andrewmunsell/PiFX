@@ -1,0 +1,13 @@
+{
+	"name": "PiFX",
+	"version": "1.0.0",
+	"author": "Andrew Munsell <andrew@wizardapps.net>",
+
+	"dependencies": {
+		"socket.io": ">=0.9.0",
+		"tinycolor2": ">=0.9.9",
+		"easing": ">=0.0.3",
+		"raspberrypixels": "*",
+		"bindings": "*"
+	}
+}
