@@ -12,7 +12,7 @@ var http 		= require('http'),
 	AvailableAnimations = require('./animationloader').load()
 	Animations	= []
 
-var PIXELS  = parseInt(process.env.PIXELS, 10) || 25
+var PIXELS  = parseInt(process.env.PIXELS, 10) || 160
 var DEVICE 	= process.env.DEVICE || '/dev/spidev0.0'
 var PORT 	= process.env.PORT || 8888
 
@@ -23,7 +23,7 @@ app.listen(parseInt(PORT, 10))
 
 console.log("HTTP server listening on port " + PORT)
 
-var Device				= new spi.Spi(DEVICE, function(){});
+var Device				= new spi.Spi(DEVICE, {}, function(s){s.open();});
 var Pixels 				= new RPixel.PixelBuffer(PIXELS)
 var ActiveAnimations 	= []
 var Frame 				= 0
